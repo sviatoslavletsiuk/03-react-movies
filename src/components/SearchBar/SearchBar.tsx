@@ -6,20 +6,20 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({ onSubmit }: SearchBarProps) => {
-  // Функція для атрибуту action
+  // Функція для атрибуту action (React 19 Form Actions)
   const handleFormAction = (formData: FormData) => {
     const query = formData.get("query") as string;
 
-    if (!query.trim()) {
+    if (!query || query.trim() === "") {
       toast.error("Search field is empty!");
       return;
     }
 
+    // Викликаємо проп із обрізаним запитом
     onSubmit(query.trim());
 
-    // Очищення форми (традиційний спосіб для Form Actions)
-    const form = document.querySelector(`.${s.form}`) as HTMLFormElement;
-    form?.reset();
+    // ВАЖЛИВО: form.reset() ПРИБРАНО.
+    // React автоматично скине форму після завершення цієї функції.
   };
 
   return (
@@ -32,7 +32,7 @@ const SearchBar = ({ onSubmit }: SearchBarProps) => {
           <input
             className={s.input}
             type="text"
-            name="query"
+            name="query" // Обов'язково для FormData
             placeholder="Search movies..."
             autoFocus
             autoComplete="off"
