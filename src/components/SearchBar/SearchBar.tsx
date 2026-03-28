@@ -6,19 +6,20 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({ onSubmit }: SearchBarProps) => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const queryInput = form.elements.namedItem("query") as HTMLInputElement;
-    const query = queryInput.value.trim();
+  // Функція для атрибуту action
+  const handleFormAction = (formData: FormData) => {
+    const query = formData.get("query") as string;
 
-    if (!query) {
+    if (!query.trim()) {
       toast.error("Search field is empty!");
       return;
     }
 
-    onSubmit(query);
-    form.reset(); // Цей рядок очищає поле вводу
+    onSubmit(query.trim());
+
+    // Очищення форми (традиційний спосіб для Form Actions)
+    const form = document.querySelector(`.${s.form}`) as HTMLFormElement;
+    form?.reset();
   };
 
   return (
@@ -27,7 +28,7 @@ const SearchBar = ({ onSubmit }: SearchBarProps) => {
         <a href="/" className={s.link}>
           MovieSearch
         </a>
-        <form className={s.form} onSubmit={handleSubmit}>
+        <form className={s.form} action={handleFormAction}>
           <input
             className={s.input}
             type="text"
